@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 from enum import Enum
+from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI()
 
@@ -73,3 +75,44 @@ async def query2(item_id: int, user: str, item: str = None, sold: bool = False):
     if sold:
         result.update({"sold": sold})
     return result
+
+class User(BaseModel):
+    id: int
+    name: str
+    lastname: str | None = None
+    age: int
+
+class UpdateUser(BaseModel):
+    id: Optional[int] = None
+    name: Optional[str] = None
+    lastname: Optional[str] = None
+    age: Optional[int] = None
+
+users = {}
+
+# Request body
+# Request POST
+@app.post("/createuser/{user_id}")
+async def create_user(user: User, user_id: int):
+    if user_id in users:
+        return {"message": "User already exists"}
+    users[user_id] = user
+    return {"message": "User created"}
+
+# Request GET
+@app.get("/user/{user_id}")
+async def read_user(user_id: int = Path(description="The ID of the user to read", gt=0)):
+    return users[user_id]
+
+# Request PUT
+@app.put("/updateuser/{user_id}")
+async def update_user(user: UpdateUser, user_id: int):
+    if user_id not in users:
+        return {"message": "User does not exist"}
+    if user.name != None:
+        users[user_id].name = user.name
+    if user.lastname != None:
+        users[user_id].lastname = user.lastname
+    if user.age != None:
+        users[user_id].age = user.age
+    return {"message": "User updated"}
