@@ -1,7 +1,7 @@
-from fastapi import FastAPI, Path
+from fastapi import FastAPI, Path, Query
 from enum import Enum
-from pydantic import BaseModel
 from models.user import User, UpdateUser
+from typing import Annotated
 
 app = FastAPI()
 
@@ -91,6 +91,14 @@ async def create_user(user: User, user_id: int):
 @app.get("/user/{user_id}")
 async def read_user(user_id: int = Path(description="The ID of the user to read", gt=0)):
     return users[user_id]
+
+# Query parameters
+@app.get("/user/")
+async def user_name(name: Annotated[str | None, Query(max_length=50, gt=0)] = None):
+    for data in users:
+        if users[data].name == name:
+            return users[data]
+    return {"data": "User not found"}
 
 # Request PUT
 @app.put("/updateuser/{user_id}")
