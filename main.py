@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Path
 from enum import Enum
 from pydantic import BaseModel
-from typing import Optional
+from models.user import User, UpdateUser
 
 app = FastAPI()
 
@@ -75,18 +75,6 @@ async def query2(item_id: int, user: str, item: str = None, sold: bool = False):
     if sold:
         result.update({"sold": sold})
     return result
-
-class User(BaseModel):
-    id: int
-    name: str
-    lastname: str | None = None
-    age: int
-
-class UpdateUser(BaseModel):
-    id: Optional[int] = None
-    name: Optional[str] = None
-    lastname: Optional[str] = None
-    age: Optional[int] = None
 
 users = {}
 
