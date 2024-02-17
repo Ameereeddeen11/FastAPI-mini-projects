@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query, Depends
 from enum import Enum
 from models.user import User, UpdateUser
 from typing import Annotated
@@ -102,16 +102,32 @@ async def create_user(user: User, user_id: int):
 
 # Request GET
 @app.get("/user/{user_id}")
-async def read_user(user_id: int = Path(description="The ID of the user to read", gt=0)):
-    return users[user_id]
+async def read_user(user_id: int = Path(description="The ID of the user to read", gt=0), db: Session = Depends(get_db)):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+# Request GET from database
+@app.get("/user_all/")
+async def read_user_all(db: Session = Depends(get_db)):
+    return db.query(models.User).all()
+
+# Request POST to database
+@app.post("/createuser/")
+async def create_user(user: User, db: Session = Depends(get_db)):
+    book_model = models.User()
+    book_model.name = user.name
+    book_model.lastname = user.lastname
+    book_model.age = user.age
+    db.add(book_model)
+    db.commit()
+    return user
 
 # Query parameters
-@app.get("/user/")
+"""@app.get("/user/")
 async def user_name(name: Annotated[str | None, Query(max_length=50, gt=0)] = None):
     for data in users:
         if users[data].name == name:
             return users[data]
-    return {"data": "User not found"}
+    return {"data": "User not found"}"""
 
 # Request PUT
 @app.put("/updateuser/{user_id}")
