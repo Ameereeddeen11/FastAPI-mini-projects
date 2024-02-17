@@ -2,6 +2,19 @@ from fastapi import FastAPI, Path, Query
 from enum import Enum
 from models.user import User, UpdateUser
 from typing import Annotated
+from models.database import engine, SessionLocal
+from models.models import Base
+from sqlalchemy.orm import Session
+from models import models
+
+models.Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 app = FastAPI()
 
