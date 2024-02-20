@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Path, Query, Depends
+from fastapi import FastAPI, Path, Query, Depends, Request
 from enum import Enum
 from models.user import User, UpdateUser
 from typing import Annotated
@@ -6,6 +6,8 @@ from models.database import engine, SessionLocal
 from models.models import Base
 from sqlalchemy.orm import Session
 from models import models
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -141,3 +143,13 @@ async def update_user(user: UpdateUser, user_id: int):
     if user.age != None:
         users[user_id].age = user.age
     return {"message": "User updated"}
+
+# Request Get with template
+templates = Jinja2Templates(directory="templates")
+@app.get("/template/{id}", response_class=HTMLResponse)
+async def template_user(request: Request, id: int, db: Session = Depends(get_db)):
+    user_id = db.query(models.User).filter(models.User.id == id).first()
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "id": user_id
+    })
