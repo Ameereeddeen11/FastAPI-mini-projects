@@ -129,6 +129,7 @@ celerybeat.pid
 .venv
 learning/env/
 learning/venv/
+sold_your_house/venv/
 ENV/
 env.bak/
 venv.bak/
