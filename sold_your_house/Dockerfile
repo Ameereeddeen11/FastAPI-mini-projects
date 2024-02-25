@@ -1,17 +1,11 @@
-#
+# Image: python:latest
 FROM python:latest
 
-#
+# Set the working directory in the container to /code
 WORKDIR /code
 
-#
-COPY ./requirements.txt /code/requirements.txt
+# Copy the current directory contents into the container at /code
+COPY . /code
 
-#
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-
-#
-COPY ./ /code/app
-
-#
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+# Install any needed packages specified in requirements.txt
+RUN pip install -r /code/requirements.txt

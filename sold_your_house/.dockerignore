@@ -7,9 +7,10 @@
 **/.DS_Store
 **/__pycache__
 **/.venv
+**/.__pycache__
 **/.classpath
 **/.dockerignore
-#**/.env
+**/.env
 **/.git
 **/.gitignore
 **/.project
