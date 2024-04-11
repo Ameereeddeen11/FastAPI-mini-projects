@@ -129,6 +129,7 @@ learning/env/
 learning/venv/
 sold_your_house/venv/
 sold_your_house/.env
+note-app/.env
 ENV/
 env.bak/
 venv.bak/
