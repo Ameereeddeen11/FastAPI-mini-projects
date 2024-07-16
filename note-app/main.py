@@ -3,8 +3,11 @@ from db.db import SessionLocal, engine
 from sqlalchemy.orm import Session
 from typing import Annotated
 from db.models import *
+from auth import get_current_user
+import auth
 
 app = FastAPI()
+app.include_router(auth.router)
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,7 +19,13 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 @app.get("/")
-async def home():
-    return {"message": "Hello World"}
+async def home(db: db_dependency, user: user_dependency):
+    if user is None:
+        return {"message": "No user found"}
+    notes = db.query(Note).filter(Note.user_id == user["user_id"]).all()
+    if not notes:
+        return {"message": "No notes found"}
+    return notes

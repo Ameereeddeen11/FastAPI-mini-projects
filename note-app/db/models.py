@@ -15,7 +15,7 @@ class User(ModelBase):
     email = Column(String, unique=True, index=True)
     password = Column(String)
 
-    notes = relationship("Note", back_populates="owner")
+    notes = relationship("Note", back_populates="user")
 
 class Note(ModelBase):
     __tablename__ = "notes"
