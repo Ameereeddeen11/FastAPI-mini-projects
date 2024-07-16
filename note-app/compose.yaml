@@ -5,22 +5,21 @@ services:
       - .:/app
     ports:
       - 8000:8000
-    image: app:code
     container_name: note-app
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     depends_on:
       - db
   db:
-    image: postgres:13
-    volumes:
-      - pg_data:/var/lib/postgresql/data
+    image: postgres:latest
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bUeN0
     ports:
       - 5432:5432
-    container_name: note_app_db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    container_name: postgres_db
 
 volumes:
   pg_data:

@@ -134,6 +134,12 @@ ENV/
 env.bak/
 venv.bak/
 
+# Alembic
+note-app/alembic.ini
+
+# data file
+note-app/data/
+
 # Spyder project settings
 .spyderproject
 .spyproject
