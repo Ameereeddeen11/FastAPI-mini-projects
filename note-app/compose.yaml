@@ -1,16 +1,15 @@
 services:
-  app:
+  note-app:
     build: .
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - 8000:8000
     image: app:code
-    container_name: note_app
+    container_name: note-app
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     depends_on:
       - db
-
   db:
     image: postgres:13
     volumes:
