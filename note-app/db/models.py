@@ -20,7 +20,7 @@ class User(ModelBase):
 class Note(ModelBase):
     __tablename__ = "notes"
 
-    title = Column(String, index=True)
+    title = Column(String)
     content = Column(Text)
     created_at = Column(DateTime)
     user_id = Column(Integer, ForeignKey("users.id"))

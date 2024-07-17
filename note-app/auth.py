@@ -49,7 +49,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
-    token = create_access_token(user.name, user.id, timedelta(minutes=15))
+    token = create_access_token(user.username, user.id, timedelta(minutes=15))
     return {"access_token": token, "token_type": "bearer"}
 
 def authenticate_user(db: db_dependency, username: str, password: str):
