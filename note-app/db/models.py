@@ -16,6 +16,7 @@ class User(ModelBase):
     password = Column(String)
 
     notes = relationship("Note", back_populates="user")
+    category_user = relationship("Category", back_populates="user")
 
 class Note(ModelBase):
     __tablename__ = "notes"
@@ -25,3 +26,13 @@ class Note(ModelBase):
     created_at = Column(DateTime)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="notes")
+
+class Category(ModelBase):
+    __tablename__ = "categories"
+
+    name = Column(String)
+    description = Column(Text)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="category_user")
+
+
