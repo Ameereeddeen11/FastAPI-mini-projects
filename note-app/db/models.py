@@ -27,6 +27,8 @@ class Note(ModelBase):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="notes")
 
+    categories = relationship("CategoryNotes", back_populates="note")
+
 class Category(ModelBase):
     __tablename__ = "categories"
 
@@ -35,4 +37,12 @@ class Category(ModelBase):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="category_user")
 
+    notes = relationship("CategoryNotes", back_populates="category")
 
+class CategoryNotes(ModelBase):
+    __tablename__ = "category_notes"
+
+    category_id = Column(Integer, ForeignKey("categories.id"))
+    note_id = Column(Integer, ForeignKey("notes.id"))
+    category = relationship("Category", back_populates="notes")
+    note = relationship("Note", back_populates="categories")
