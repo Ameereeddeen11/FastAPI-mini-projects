@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from db.db import SessionLocal
-from typing import Annotated
+from typing import Annotated, List
 from db.models import *
 from auth import get_current_user
 from schemas.noteSchemas import *
@@ -36,23 +36,26 @@ async def create_note(
         title: str = Form(...),
         content: str = Form(...),
         db: Session = Depends(get_db),
-        user = Depends(get_current_user),
-        file: UploadFile = File(...)
+        user=Depends(get_current_user),
+        files: List[UploadFile] = File(...),
 ):
     note = NoteSchema(title=title, content=content)
-    image_path = f"images/{file.filename}"
-    with open(image_path, "wb") as buffer:
-        buffer.write(file.file.read())
-
-    new_note = await create_notes(db=db, note=note, user=user, image_path=image_path)
-
+    new_note = await create_notes(db=db, note=note, user=user)
+    for file in files:
+        image_path = f"images/{file.filename}"
+        with open(image_path, "wb") as buffer:
+            buffer.write(file.file.read())
+        new_image = ImageNote(
+            url=image_path,
+            note_id=new_note.id
+        )
     return new_note
 
 async def create_notes(
         note: NoteSchema,
         db: db_dependency,
-        user: user_dependency,
-        image_path: str
+        user: user_dependency
+        # image_path: str
 ):
     new_note = Note(
         title=note.title,
@@ -63,12 +66,12 @@ async def create_notes(
     db.add(new_note)
     db.commit()
 
-    new_image = ImageNote(
-        url=image_path,
-        note_id=new_note.id
-    )
-    db.add(new_image)
-    db.commit()
+    # new_image = ImageNote(
+    #     url=image_path,
+    #     note_id=new_note.id
+    # )
+    # db.add(new_image)
+    # db.commit()
 
     return new_note
 
