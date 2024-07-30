@@ -28,6 +28,7 @@ class Note(ModelBase):
     user = relationship("User", back_populates="notes")
 
     categories = relationship("CategoryNotes", back_populates="note")
+    images = relationship("ImageNote", back_populates="note")
 
 class Category(ModelBase):
     __tablename__ = "categories"
@@ -46,3 +47,10 @@ class CategoryNotes(ModelBase):
     note_id = Column(Integer, ForeignKey("notes.id"))
     category = relationship("Category", back_populates="notes")
     note = relationship("Note", back_populates="categories")
+
+class ImageNote(ModelBase):
+    __tablename__ = "images"
+
+    url = Column(String)
+    note_id = Column(Integer, ForeignKey("notes.id"))
+    note = relationship("Note", back_populates="images")

@@ -140,6 +140,9 @@ note-app/alembic.ini
 # data file
 note-app/data/
 
+# images folder
+note-app/images/
+
 # Spyder project settings
 .spyderproject
 .spyproject

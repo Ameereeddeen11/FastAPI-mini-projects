@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from db.db import SessionLocal
 from typing import Annotated
 from db.models import *
 from auth import get_current_user
 from schemas.noteSchemas import *
-import datetime
+from PIL import Image
+from io import BytesIO
+import datetime, os
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/note",
@@ -29,7 +32,28 @@ async def get_note(note_id: int, db: db_dependency, user: user_dependency):
     return note
 
 @router.post("/create", status_code=201)
-async def create_note(note: NoteSchema, db: db_dependency, user: user_dependency):
+async def create_note(
+        title: str = Form(...),
+        content: str = Form(...),
+        db: Session = Depends(get_db),
+        user = Depends(get_current_user),
+        file: UploadFile = File(...)
+):
+    note = NoteSchema(title=title, content=content)
+    image_path = f"images/{file.filename}"
+    with open(image_path, "wb") as buffer:
+        buffer.write(file.file.read())
+
+    new_note = await create_notes(db=db, note=note, user=user, image_path=image_path)
+
+    return new_note
+
+async def create_notes(
+        note: NoteSchema,
+        db: db_dependency,
+        user: user_dependency,
+        image_path: str
+):
     new_note = Note(
         title=note.title,
         content=note.content,
@@ -37,6 +61,13 @@ async def create_note(note: NoteSchema, db: db_dependency, user: user_dependency
         user_id=user["user_id"]
     )
     db.add(new_note)
+    db.commit()
+
+    new_image = ImageNote(
+        url=image_path,
+        note_id=new_note.id
+    )
+    db.add(new_image)
     db.commit()
 
     return new_note
