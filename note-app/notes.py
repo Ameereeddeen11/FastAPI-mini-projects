@@ -4,8 +4,6 @@ from typing import Annotated, List
 from db.models import *
 from auth import get_current_user
 from schemas.noteSchemas import *
-from PIL import Image
-from io import BytesIO
 import datetime, os
 from sqlalchemy.orm import Session
 
@@ -55,7 +53,6 @@ async def create_notes(
         note: NoteSchema,
         db: db_dependency,
         user: user_dependency
-        # image_path: str
 ):
     new_note = Note(
         title=note.title,
@@ -65,13 +62,6 @@ async def create_notes(
     )
     db.add(new_note)
     db.commit()
-
-    # new_image = ImageNote(
-    #     url=image_path,
-    #     note_id=new_note.id
-    # )
-    # db.add(new_image)
-    # db.commit()
 
     return new_note
 
