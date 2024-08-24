@@ -12,3 +12,4 @@ fastapi-mail
 pydantic
 pillow
 python-multipart
+pytest

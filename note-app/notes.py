@@ -22,7 +22,7 @@ def get_db():
 db_dependency = Annotated[SessionLocal, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
-@router.get("/note/{note_id}")
+@router.get("/{note_id}", status_code=200)
 async def get_note(note_id: int, db: db_dependency, user: user_dependency):
     note = db.query(Note).filter(note_id == Note.id, user["user_id"] == Note.user_id).first()
     if not note:
