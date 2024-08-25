@@ -28,8 +28,8 @@ router = APIRouter(
     tags=["auth"]
 )
 
-SECRET_KEY = "HS256"
-ALGORITHM = "secret"
+SECRET_KEY = "Lily"
+ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
