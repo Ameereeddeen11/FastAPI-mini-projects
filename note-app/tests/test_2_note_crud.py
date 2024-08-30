@@ -46,7 +46,7 @@ def test_update_note():
     response = client.put(
         "/note/update/1",
         headers={"Authorization": f"bearer {get_token()}"},
-        data=update_datas
+        json=update_datas
     )
     assert response.status_code == 200
     assert response.json() == update_datas
