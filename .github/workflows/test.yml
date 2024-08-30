@@ -32,7 +32,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest ./note-app/tests
+          python -m pytest
 
     services:
       postgres:
