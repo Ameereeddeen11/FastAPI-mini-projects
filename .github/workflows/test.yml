@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - note-app
 
 jobs:
   test:
@@ -28,11 +28,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./note-app/requirements.txt
+          pip install -r requirements.txt
+
+      - name: Create images directory
+        run: | 
+          mkdir images
 
       - name: Run tests
         run: |
-          python -m pytest ./note-app/tests
+          python -m pytest
 
     services:
       postgres:
