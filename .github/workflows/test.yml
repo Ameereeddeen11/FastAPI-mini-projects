@@ -30,6 +30,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Create images directory
+        run: | 
+          mkdir images
+
       - name: Run tests
         run: |
           python -m pytest

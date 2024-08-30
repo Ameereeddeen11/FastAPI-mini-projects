@@ -23,7 +23,7 @@ def test_user_login():
     response = client.post(
         "/auth/token/",
         data={
-            "username": "testname",
+            "username": "testuser",
             "password": "password"
         }
     )

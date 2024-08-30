@@ -27,7 +27,11 @@ async def get_note(note_id: int, db: db_dependency, user: user_dependency):
     note = db.query(Note).filter(note_id == Note.id, user["user_id"] == Note.user_id).first()
     if not note:
         return {"message": "Note not found"}
-    return note
+    return {
+        "title": note.title,
+        "content": note.content,
+        "created_at": note.created_at
+    }
 
 @router.post("/create", status_code=201)
 async def create_note(
@@ -74,7 +78,10 @@ async def update_note(note_id: int, note: NoteSchema, db: db_dependency, user: u
     note_to_update.content = note.content
     db.commit()
 
-    return note_to_update
+    return {
+        "title": note_to_update.title,
+        "content": note_to_update.content
+    }
 
 @router.delete("/delete/{note_id}", status_code=200)
 async def delete_note(note_id: int, db: db_dependency, user: user_dependency):
