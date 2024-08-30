@@ -1,7 +1,7 @@
 import io, pytest
 from main import app
 from fastapi.testclient import TestClient
-from .test_user import test_user_login
+from .test_1_user import get_token
 
 client = TestClient(app)
 
@@ -23,19 +23,10 @@ files = {
     )
 }
 
-@pytest.mark.order(1)
 def test_create_note():
-    response = client.post(
-        "/auth/token/",
-        data={
-            "username": "testname",
-            "password": "password"
-        }
-    )
-    token = response.json()["access_token"]
     create_note = client.post(
         "/note/create",
-        headers={"Authorization": f"bearer {token}"},
+        headers={"Authorization": f"bearer {get_token()}"},
         data=datas,
         files=files
     )
@@ -43,37 +34,19 @@ def test_create_note():
     assert create_note.json()["title"] == datas["title"]
     assert create_note.json()["content"] == datas["content"]
 
-@pytest.mark.order(2)
 def test_get_note():
-    response = client.post(
-        "/auth/token/",
-        data={
-            "username": "testname",
-            "password": "password"
-        }
-    )
-    token = response.json()["access_token"]
     response = client.get(
         "/note/1",
-        headers={"Authorization": f"bearer {token}"}
+        headers={"Authorization": f"bearer {get_token()}"}
     )
     assert response.status_code == 200
     assert response.json() == datas
 
-@pytest.mark.order(3)
 def test_update_note():
-    response = client.post(
-        "/auth/token/",
-        data={
-            "username": "testname",
-            "password": "password"
-        }
-    )
-    token = response.json()["access_token"]
     response = client.put(
         "/note/update/1",
-        headers={"Authorization": f"bearer {token}"},
-        json=update_datas
+        headers={"Authorization": f"bearer {get_token()}"},
+        data=update_datas
     )
     assert response.status_code == 200
     assert response.json() == update_datas

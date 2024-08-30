@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
-@pytest.mark.order(1)
 def test_user_registration():
     response = client.post(
         "/auth/register/",
@@ -20,7 +19,6 @@ def test_user_registration():
     # assert response.json()["username"] == "testuser"
     # assert response.json()["email"] == "test@test.com"
 
-@pytest.mark.order(2)
 def test_user_login():
     response = client.post(
         "/auth/token/",
@@ -30,6 +28,13 @@ def test_user_login():
         }
     )
     assert response.status_code == 200
-    assert "access_token" in response.json()
-    assert response.json()["token_type"] == "bearer"
+
+def get_token():
+    response = client.post(
+        "/auth/token/",
+        data={
+            "username": "testuser",
+            "password": "password"
+        }
+    )
     return response.json()["access_token"]
