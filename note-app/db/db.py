@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 load_dotenv()
 
-DB_URL = "postgresql://postgres:bUeN0@localhost:5432/postgres"
+DB_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
 
 engine = create_engine(DB_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
